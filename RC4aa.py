@@ -1,5 +1,6 @@
 """
 from swrlly's project
+unused right now but it'll be used as soon as i can figure out how to implement it.
 Decrypts a stream of bytes, maintaining an internal state.
 """
 

@@ -70,12 +70,3 @@ class Proxy(Thread):
 
 master_server = Proxy('51.222.11.213', 2050)
 master_server.start()
-
-
-while True:
-    try:
-         cmd = input('$ ')
-         if cmd[:4] == 'quit':
-            exit()
-    except Exception as e:
-        print(e)
