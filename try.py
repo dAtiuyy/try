@@ -18,7 +18,7 @@ class Proxy2server(Thread):
         while True:
             data = self.server.recv(4096)
             if data:
-                print( "[{}] <- {}".format(self.port, data[:100]))
+                #print( "[{}] <- {}".format(self.port, data))
                 #try:
                 #   importlib.reload(parse)
                 #   parse.parsing(data, self.port, 'server')
@@ -43,10 +43,10 @@ class Game2Proxy(Thread):
         while True:
             data = self.game.recv(4096)
             if data:
-                print( "[{}] -> {}".format(self.port, data))
+                #print( "[{}] -> {}".format(self.port, data))
                 importlib.reload(parse)
-                #parse.parsing(data, self.port, 'client')
-                # do sum
+                parse.parsing(data, self.port, 'client')
+                #does shit dude
                 self.server.sendall(data)
 
 class Proxy(Thread):
@@ -68,5 +68,5 @@ class Proxy(Thread):
             self.g2p.start()
             self.p2s.start()
 
-master_server = Proxy('51.222.11.213', 2050)
+master_server = Proxy('0.0.0.0','51.222.11.213', 2050)
 master_server.start()
