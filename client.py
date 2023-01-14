@@ -4,7 +4,31 @@ from threading import Thread
 import parse
 from Cryptodome.Cipher import ARC4
 import pickle
+from RC4aa import RC4
 
+class Client:
+    def __init__(self):
+        self.remoteHostAddr = "51.222.11.213"
+        self.remoteHostPort = 2050
+        self.objectID = None
+        self.charID = None
+        self.reconnecting = False
+        self.connected = False
+        self.clientSendKey = RC4(bytearray.fromhex("BA15DE"))
+        self.clientReceiveKey = RC4(bytearray.fromhex("612a806cac78114ba5013cb531"))
+        self.serverSendKey = RC4(bytearray.fromhex("612a806cac78114ba5013cb531"))
+        self.serverReceiveKey = RC4(bytearray.fromhex("BA15DE"))
+        self.gameSocket = None
+        self.serverSocket = None
+        self.currentMap = "None"
+        self.gameIDs = {
+			-1 : "Nexus",
+			-2 : "Nexus",
+			-5 : "Vault",
+			-15 : "Marketplace",
+			-16 : "Ascension Enclave",
+			-17 : "Aspect Hall"
+		}
 
 class Proxy2server(Thread):
     def __init__(self, host, port):
