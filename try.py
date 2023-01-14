@@ -3,6 +3,7 @@ import importlib
 from threading import Thread
 import parse
 from Cryptodome.Cipher import ARC4
+import pickle
 
 
 class Proxy2server(Thread):
@@ -19,11 +20,11 @@ class Proxy2server(Thread):
             data = self.server.recv(4096)
             if data:
                 #print( "[{}] <- {}".format(self.port, data))
-                #try:
-                #   importlib.reload(parse)
-                #   parse.parsing(data, self.port, 'server')
-                #except Exception as e:
-                #    print('server[{}]'.format(self.port), e)
+                try:
+                   importlib.reload(parse)
+                   parse.parsing(data, self.port, 'server')
+                except Exception as e:
+                    print('server[{}]'.format(self.port), e)
                 # do sum
                 self.game.sendall(data)
 
@@ -70,3 +71,29 @@ class Proxy(Thread):
 
 master_server = Proxy('0.0.0.0','51.222.11.213', 2050)
 master_server.start()
+print("[Initializer]: Deserializing objects...")
+with open("bin/BulletDictionary.pkl", "rb") as f:
+    bulletDictionary = pickle.load(f)
+    print("[Initializer]: Deserialized {} enemies.".format(len(set([x[0] for x in bulletDictionary.keys()]))))            
+    print("[Initializer]: Deserialized {} bullets.".format(len(bulletDictionary)))
+with open("bin/NameDictionary.pkl", "rb") as f:
+    nameDictionary = pickle.load(f)
+
+with open("bin/TileDictionary.pkl", "rb") as f:
+    tileDictionary = pickle.load(f)       
+    print("[Initializer]: Deserialized {} tiles.".format(len(tileDictionary)))
+
+with open("bin/AoeDictionary.pkl", "rb") as f:
+    aoeDictionary = pickle.load(f)
+    print("[Initializer]: Deserialized {} AOEs.".format(sum({y: len(aoeDictionary[y]) for y in aoeDictionary}.values())))
+
+class BulletInfo:
+
+	def __init__(self):
+		# bulletType in XML
+		self.bulletType = 0
+		self.damage = 0
+
+	def PrintString(self):
+		print("bulletType", self.bulletType, "damage", self.damage)
+
