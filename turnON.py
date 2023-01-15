@@ -1,4 +1,4 @@
-import threading
+from threading import Thread
 import sys
 
 from client import *
@@ -18,52 +18,4 @@ class turnON:
 
         self.active = False
         self.serverMonitorThread = None
-
-    def ServerMonitor(self):
-        self.managerSocket.bind((self.localHostAddr, self.localHostPort))
-        self.managerSocket.listen(3)
-		# always listening for client connect
-        while True:
-            self.client.gameSocket, addr = self.managerSocket.accept()
-
-    def Start(self):
-        self.active = True
-		# start up server socket
-        self.serverMonitorThread = threading.Thread(target = self.ServerMonitor, daemon = True)
-        self.serverMonitorThread.start()
-        self.Connect()
-
-    def Connect(self):
-		# connect sockets first
-        self.client.ConnectRemote(self.client.remoteHostAddr, self.client.remoteHostPort)
-        self.client.connected = True
-
-		# listen for packets
-        while True:
-            self.client.Listen()
-
-    """
-    def Restart(self):
-		self.client.Disconnect()
-		self.client.ResetCipher()
-		threading.Thread(target = self.Connect, daemon = False).start()
-	"""
-					
-def main():
-	print("[Initializer]: Loading plugins...")
-	print("[Initializer]: Starting proxy...")
-	client = Client()
-	proxy = Proxy(client)
-
-	threading.Thread(target = proxy.Start, daemon = True).start()
-
-	print("[Initializer]: Proxy started!")
-
-	print("[Initializer]: Starting GUI...")
-	print("[Initializer]: GUI started!")
-	
-
-
-if __name__ == "__main__":
-	main()
         

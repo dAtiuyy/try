@@ -13,7 +13,7 @@ def parsing(data, port, origin):
         decipher = RC4Decrypt.Decipher(key1=bytearray.fromhex("612a806cac78114ba5013cb531"))
         decrypted_data = decipher.decrypt(data)
         #print("[{}({})]{}".format(origin, port, decrypted_data[4:6]))
-        print("[{}({})]{}".format(origin, port, decrypted_data))
+        print("[{}({})]{}".format(origin, port, clientReceiveKey.decrypt(data[5:])))
 
 
 def parseHeader(header, port, origin):

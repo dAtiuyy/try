@@ -5,6 +5,11 @@ import parse
 from Cryptodome.Cipher import ARC4
 import pickle
 from RC4aa import RC4
+import turnON
+import sys
+import time
+import select
+import struct
 
 class Client:
     def __init__(self):
@@ -30,68 +35,56 @@ class Client:
 			-17 : "Aspect Hall"
 		}
 
-class Proxy2server(Thread):
-    def __init__(self, host, port):
-        super(Proxy2server, self).__init__()
-        self.game = None
-        self.port = port
-        self.host = host
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.connect((host, port))
+    def Disconnect(self):
+        self.connected = False
+        if self.serverSocket:
+            self.serverSocket.shutdown(socket.SHUT_RDWR)
+            self.serverSocket.close()
+        if self.gameSocket:
+            self.gameSocket.shutdown(socket.SHUT_RDWR)
+            self.gameSocket.close()
+        self.gameSocket = None
+        self.serverSocket = None
 
-    def run(self):
-        while True:
-            data = self.server.recv(4096)
-            if data:
-                #print( "[{}] <- {}".format(self.port, data))
-                try:
-                   importlib.reload(parse)
-                   parse.parsing(data, self.port, 'server')
-                except Exception as e:
-                    print('server[{}]'.format(self.port), e)
-                # do sum
-                self.game.sendall(data)
+	# reset ciphers to default state
+    def ResetCipher(self):
+        self.clientSendKey.reset()
+        self.clientReceiveKey.reset()
+        self.serverSendKey.reset()
+        self.serverReceiveKey.reset()
 
-class Game2Proxy(Thread):
-    def __init__(self, host, port):
-        super(Game2Proxy, self).__init__()
-        self.game = None
-        self.port = port
-        self.host = host
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind((host, port))
-        sock.listen(1)
-        self.game, addr = sock.accept()
+	# for now, we can just recon lazily
+    def Reconnect(self):
+        self.ConnectRemote(self.remoteHostAddr, self.remoteHostPort)
+        self.connected = True
 
-    def run(self):
-        while True:
-            data = self.game.recv(4096)
-            if data:
-                #print( "[{}] -> {}".format(self.port, data))
-                importlib.reload(parse)
-                parse.parsing(data, self.port, 'client')
-                #does shit dude
-                self.server.sendall(data)
+	# Connect to remote host. Block until client connected
+    def ConnectRemote(self, host, port):
+		# the invalid recon key bug is when client doesn't connect to the proxy server's socket
+		# reduced sleep time and it seems to be ok now
+        while self.gameSocket == None:
+            time.sleep(0.005)
 
-class Proxy(Thread):
-    def __init__(self, from_host, to_host, port):
-        super(Proxy, self).__init__()
-        self.from_host = from_host
-        self.to_host = to_host
-        self.port = port
+        self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.serverSocket.connect((host, port))
 
-    def run(self):
-        while(True):
-            print( "[proxy({})] is setting up".format(self.port))
-            self.g2p = Game2Proxy(self.from_host, self.port)
-            self.p2s = Proxy2server(self.to_host, self.port)
-            print( "[proxy({})] connection established".format(self.port))
-            self.g2p.server = self.p2s.server
-            self.p2s.game = self.g2p.game
+	# closes both sockets
+    def Close(self):
+        self.gameSocket.close()
+        self.serverSocket.close()
 
-            self.g2p.start()
-            self.p2s.start()
+	# restart entire connection
+    def reset(self):
+        self.internalBulletID = 0
+        self.firstBulletTime = None
+        self.Disconnect()
+        self.ResetCipher()
+        self.Reconnect()
+
+	# call this fcn when you reset connection
+    def resetMapName(self):
+        self.currentMap = "Nexus"
+
 
 master_server = Proxy('0.0.0.0','51.222.11.213', 2050)
 master_server.start()
