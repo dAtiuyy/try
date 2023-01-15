@@ -6,5 +6,5 @@ class Decipher:
 
     def decrypt(self, data):
         rc4 = ARC4.new(self.key1)
-        decrypted_data = rc4.decrypt(data)
+        decrypted_data = rc4.decrypt(data[5:])
         return decrypted_data
