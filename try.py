@@ -3,6 +3,7 @@ import importlib
 from threading import Thread
 import parse
 from Cryptodome.Cipher import ARC4
+import time
 
 
 class Proxy2server(Thread):
@@ -16,16 +17,14 @@ class Proxy2server(Thread):
 
     def run(self):
         while True:
-            data = self.server.recv(4096)
-            if data:
-                #print( "[{}] <- {}".format(self.port, data))
-                #try:
-                #   importlib.reload(parse)
-                #   parse.parsing(data, self.port, 'server')
-                #except Exception as e:
-                #    print('server[{}]'.format(self.port), e)
-                # do sum
-                self.game.sendall(data)
+                try:
+                    data = self.server.recv(4096)
+                    if data:
+                        self.game.sendall(data)
+                except (ConnectionResetError, OSError):
+                        self.server.close()
+                        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        self.server.connect((self.host, self.port))
 
 class Game2Proxy(Thread):
     def __init__(self, host, port):
@@ -33,21 +32,28 @@ class Game2Proxy(Thread):
         self.game = None
         self.port = port
         self.host = host
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind((host, port))
-        sock.listen(1)
-        self.game, addr = sock.accept()
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.bind((host, port))
+        self.sock.listen(1)
+        self.game, addr = self.sock.accept()
 
     def run(self):
         while True:
-            data = self.game.recv(4096)
-            if data:
-                #print( "[{}] -> {}".format(self.port, data))
-                importlib.reload(parse)
-                parse.parsing(data, self.port, 'client')
-                #does shit dude
-                self.server.sendall(data)
+            try:
+                data = self.game.recv(4096)
+                if data:
+                    importlib.reload(parse)
+                    parse.parsing(data, self.port, 'client')
+                    self.server.sendall(data)
+            except (ConnectionResetError, OSError):
+                    self.game.close()
+                    self.sock.close()
+                    self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                    self.sock.bind((self.host, self.port))
+                    self.sock.listen(1)
+                    self.game,addr = self.sock.accept()
 
 class Proxy(Thread):
     def __init__(self, from_host, to_host, port):
