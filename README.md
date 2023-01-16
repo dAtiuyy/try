@@ -13,7 +13,7 @@
 
 ## Packets and IDs
 <p align="center">
-  <img src="packet&ids.png" />
+  <img src="packets&ids.png" />
 </p>
 
 ## Basic IDs && Connect to realm or maybe vault (my way of doing the second part is childish asf, ill improve later)
