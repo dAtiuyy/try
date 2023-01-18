@@ -47,6 +47,9 @@ For this project i wont be going the same route as Swrlly, i wont make a separat
 
 
 ### Resources 
-https://realpython.com/python-sockets/
-https://www.visual-paradigm.com/guide/uml-unified-modeling-language/uml-class-diagram-tutorial/
-https://docs.python.org/3/library/socket.html
+UML-Class-Diagram-Tutorial [UML](https://www.visual-paradigm.com/guide/uml-unified-modeling-language/uml-class-diagram-tutorial/).
+Python-Socket-Docs-1 [Python-Socket-1](https://realpython.com/python-sockets/).
+Python-Socket-Docs-2 [Python-Socket-2](https://docs.python.org/3/library/socket.html).
+Readme.md-Syntax [Readme.md-Syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+PyQt6-Docs [PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/api/qtwidgets/qwidget.html#qwidget).
+PyWin32-Docs [PyWin32](http://timgolden.me.uk/pywin32-docs/contents.html).
