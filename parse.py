@@ -9,9 +9,10 @@ def parsing(data, port, origin):
         decrypted_data = decipher.decrypt(data)
         #print("[{}({})]{}".format(origin, port, decrypted_data))
         id = struct.unpack("!B", data[4:5])[0]
-        if id == 16 | id == 66:
-                playerShoot(decrypted_data)
+        if id == 16:
                 Move(decrypted_data)
+        elif id == 66:
+                playerShoot(decrypted_data)
         # print the header, length and ID
         print_header(data)
     
