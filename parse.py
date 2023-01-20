@@ -10,10 +10,10 @@ def parsing(data, port, origin):
         #print("[{}({})]{}".format(origin, port, decrypted_data))
         id = struct.unpack("!B", data[4:5])[0]
         if id == 16:
-                print('dataMove: ', decrypted_data)
+                print('dataMove: ')
                 #Move(decrypted_data)
         elif id == 66:
-                print('dataplayerShoot: ', decrypted_data)
+                print('dataplayerShoot: ')
                 #playerShoot(decrypted_data)
         # print the header, length and ID
         print_header(data)

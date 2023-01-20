@@ -4,7 +4,9 @@ from threading import Thread
 import parse
 from Cryptodome.Cipher import ARC4
 import time
+import struct
 
+specific_id_to_ignore = 52
 
 class Proxy2server(Thread):
     def __init__(self, host, port):
@@ -20,7 +22,9 @@ class Proxy2server(Thread):
                 try:
                     data = self.server.recv(4096)
                     if data:
-                        self.game.sendall(data)
+                        package_id = struct.unpack("!B", data[4:5])[0]
+                        if package_id != specific_id_to_ignore:  # check if the package id matches the id to ignore
+                            self.game.sendall(data)
                 except (ConnectionResetError, OSError):
                         self.server.close()
                         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,6 +48,10 @@ class Game2Proxy(Thread):
                 data = self.game.recv(4096)
                 if data:
                     importlib.reload(parse)
+                    package_id = struct.unpack("!B", data[4:5])[0]
+                    #if package_id != specific_id_to_ignore:  # check if the package id matches the id to ignore
+                    #    parse.parsing(data, self.port, 'client')
+                    #    self.server.sendall(data)
                     parse.parsing(data, self.port, 'client')
                     self.server.sendall(data)
             except (ConnectionResetError, OSError):
