@@ -9,19 +9,21 @@ def parsing(data, port, origin):
         decrypted_data = decipher.decrypt(data)
         #print("[{}({})]{}".format(origin, port, decrypted_data))
         id = struct.unpack("!B", data[4:5])[0]
+        """
         if id == 16:
                 print('dataMove: ')
                 #Move(decrypted_data)
         elif id == 66:
                 print('dataplayerShoot: ')
                 #playerShoot(decrypted_data)
+        """
         # print the header, length and ID
         print_header(data)
     
 def print_header(data):
         header = struct.unpack("!5s", data[:5])[0]
         id = struct.unpack("!B", data[4:5])[0]
-        length = struct.unpack("!i", data[:4])[0]
+        length = struct.unpack("!i", data[0:4])[0]
         #"""
         id_to_name = {9: 'Hello', 91: 'UPDATEACK', 16: 'MOVE', 64: 'PONG', 112: 'QUEUEPONG', 66: 'PLAYERSHOOT', 1: 'USEITEM', 25: 'INVSWAP', 26: 'LOAD', 47: 'PLAYERTEXT', 174: 'POTIONSTORAGEINTERACTION', 35: 'SHOOTACK', 57: 'OTHERHIT', 79: 'GOTOACK', 19: 'ENEMYHIT', 77: 'AOEACK', 45: 'TELEPORT', 6: 'USEPORTAL', 98: 'GROUNDDAMAGE', 13: 'SQUAREHIT', 12: 'CREATE', 18: 'INVDROP', 60: 'SETCONDITION', 93: 'BUY', 178: 'GROUNDTELEPORTER', 0: 'FAILURE', 161: 'UNBOXREQUEST'}
         #if id in id_to_name:

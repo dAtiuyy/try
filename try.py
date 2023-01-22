@@ -6,7 +6,7 @@ from Cryptodome.Cipher import ARC4
 import time
 import struct
 
-specific_id_to_ignore = 52
+specific_id_to_ignore = 777
 
 class Proxy2server(Thread):
     def __init__(self, host, port):

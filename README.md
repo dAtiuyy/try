@@ -3,33 +3,33 @@ Im trying to develop it from almost zero. God Bless!
 
 # Current Stage/Problem = Packets/RC4 Cipher
 <p align="center">
-  <img src="godmode1st.png" />
+  <img src="Images/godmode1st.png" />
 </p>
 
 ### Main Idea
 <p align="center">
-  <img src="maini.jpg" />
+  <img src="Images/maini.jpg" />
 </p>
 
 ### A level deeper
 <p align="center">
-  <img src="deeper.png" />
+  <img src="Images/deeper.png" />
 </p>
 
 ### Basic IDs && Connect to realm or maybe vault (my way of doing the second part is childish asf, ill improve later)
 <p align="center">
-  <img src="IFstatementKING.png" />
+  <img src="Images/IFstatementKING.png" />
 </p>
 
 ### Demo
 Here is the demo, improved, based on what ive done so far + fix for the first demo, decrypted part only
 <p align="center">
-  <img src="output.png" />
+  <img src="Images/output.png" />
 </p>
 
 ### Now is the best time to do something else, GUI
 <p align="center">
-  <img src="gui.png" />
+  <img src="Images/gui.png" />
 </p>
 
 ### TODO!!!
